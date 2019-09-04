@@ -4,6 +4,8 @@
 const myLink = "http://petlatkea.dk/2019/students1991.json";
 const parent = document.querySelector("ol");
 const template = document.querySelector("template");
+const modal = document.querySelector(".modal");
+const img = document.querySelector(".header-img");
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -88,3 +90,13 @@ function init() {
     displayData();
   }
 }
+
+function backgroundFade() {
+  setTimeout(function() {
+    document.querySelector(".background").style.backgroundImage =
+      "linear-gradient(rgba(63, 63, 63, 0.7) 100%, transparent 50%)";
+  }, 3000);
+}
+
+// const button = document.querySelector(".main-list__button");
+// button.addEventListener("click", console.log("clicked"));

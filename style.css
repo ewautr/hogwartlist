@@ -162,3 +162,18 @@ select {
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 61rem;
+  height: 40rem;
+  background-image: url(assets/paper.jpg);
+  background-position: center;
+}
+
+.hidden {
+  display: none;
+}
