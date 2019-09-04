@@ -1,0 +1,164 @@
+html {
+  box-sizing: border-box;
+  font-size: 10px;
+  background-color: #3f3f3f;
+
+  text-transform: uppercase;
+  font-family: "Aachen", sans-serif;
+  color: #221807;
+}
+
+.background {
+  background-image: linear-gradient(rgba(63, 63, 63, 0.7) 100%, transparent 50%),
+    url(assets/bg.png);
+  background-size: 100%;
+  background-repeat: no-repeat;
+  height: 160rem;
+  width: 75rem;
+  margin: 0 auto;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.wrapper {
+  width: 68rem;
+  position: absolute;
+  top: 20rem;
+  left: 50%;
+  transform: translate(-50%, 0);
+  display: grid;
+  grid-template-rows: 50rem auto;
+}
+
+.header {
+  background-image: url(assets/paper.jpg);
+}
+
+.header-img {
+  width: 14rem;
+  height: 20rem;
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+}
+
+.header-heading1a {
+  font-size: 10rem;
+  position: absolute;
+  right: 0rem;
+  top: 5.5rem;
+  letter-spacing: 1.3rem;
+}
+
+.header-heading1b {
+  font-size: 10rem;
+  position: absolute;
+  top: 15rem;
+  left: 1rem;
+  letter-spacing: 0.8rem;
+}
+
+.header-heading1c {
+  position: absolute;
+  top: 32rem;
+  height: 18rem;
+  font-size: 10rem;
+  letter-spacing: 1rem;
+  color: #e7e4d3;
+  background-color: #221807;
+  margin: 0;
+  padding: 1rem 1rem;
+}
+
+.header-heading2 {
+  font-size: 2rem;
+  position: absolute;
+  top: 42rem;
+  left: 1rem;
+
+  color: #e7e4d3;
+}
+
+.header-heading3 {
+  width: 48rem;
+  height: 7.5rem;
+  position: absolute;
+  right: 1rem;
+  top: 0rem;
+
+  font-size: 1.3rem;
+  border: 2px solid #3f3f3f;
+  padding: 1rem 1rem;
+}
+
+.header-options {
+  position: absolute;
+  top: 47rem;
+  background-color: #e7e4d3;
+  width: 100%;
+  padding: 0.5rem 0.2rem;
+}
+
+.header-options__label {
+  display: inline-block;
+  font-size: 2rem;
+  margin-left: 12rem;
+  margin-right: 1rem;
+  transform: translateY(0.25rem);
+}
+
+select {
+  display: inline-block;
+  color: #e7e4d3;
+  text-transform: uppercase;
+  background-color: #221807;
+  border-radius: 0;
+  font-size: 1.5rem;
+  border: 1px solid #e7e4d3;
+}
+
+.main {
+  position: absolute;
+  top: 52rem;
+  width: 100%;
+  font-size: 1.6rem;
+  line-height: 3rem;
+  background-image: url(assets/paper.jpg);
+  background-position: center;
+}
+
+.main-list {
+  margin: 3rem auto;
+  width: 90%;
+}
+
+.main-list__button {
+  display: inline;
+  width: 15rem;
+  height: 3rem;
+  background-color: #221807;
+  text-align: right;
+
+  font-family: inherit;
+  font-size: 1.5rem;
+  color: #e7e4d3;
+  border-radius: 0;
+  margin-bottom: 4rem;
+  outline: 2px solid #221807;
+  outline-offset: 0rem;
+  transition: all 0.2s;
+  cursor: pointer;
+  justify-self: center;
+}
+
+.main-list__button:hover {
+  outline-offset: 0.2rem;
+  transform: translate(0.1rem, 0.2rem);
+}
+
+.students-div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Khula:800&display=swap"
+      rel="stylesheet"
+    />
+    <title>Daily Prophet: breaking news</title>
+  </head>
+  <body>
+    <div class="background"></div>
+    <div class="wrapper">
+      <header class="header">
+        <img
+          src="assets/prof.jpg"
+          alt="proffesor mcgonagall"
+          class="header-img"
+        />
+        <h3 class="header-heading3">
+          A FULL INSIGHT TO THE LIST OF STUDENTS ENROLLED TO THE SCHOOL OF
+          WITCHCRAFT AND WIZARDRY HOGWARTS. PUBLISHED IN THE DAILY PROPHET
+          OFFERS TO GIVE YOU A PEEK OF THE NAMES OF THE STUDENTS, THEIR ASSIGNED
+          HOUSE AND, AFTER CLICKING ON THE DETAILS BUTTON, A DETAILED
+          DESCRIPTION OF EACH FRESHMEN.
+        </h3>
+        <h1 class="header-heading1a">list of</h1>
+        <h1 class="header-heading1b">hogwarts</h1>
+        <h1 class="header-heading1c">students</h1>
+        <h2 class="header-heading2">class 1991:</h2>
+        <div class="header-options">
+          <label for="sort" class="header-options__label">sort:</label>
+          <select name="sort" id="sort">
+            <option value="all">all</option>
+            <option value="firstName">first name</option>
+            <option value="lastName">last name</option>
+            <option value="house">house</option>
+          </select>
+          <label for="filter" class="header-options__label">house:</label>
+          <select name="filter" id="filter">
+            <option value="all">all</option>
+            <option value="Gryffindor">gryffindor</option>
+            <option value="Ravenclaw">ravenclaw</option>
+            <option value="Hufflepuff">hufflepuff</option>
+            <option value="Slytherin">slytherin</option>
+          </select>
+        </div>
+      </header>
+
+      <main class="main">
+        <ol class="main-list"></ol>
+      </main>
+    </div>
+
+    <template id="template">
+      <div class="students-div">
+        <li class="main-list__item">name + house</li>
+        <button class="main-list__button">exclusive details</button>
+      </div>
+    </template>
+
+    <script src="script.js"></script>
+  </body>
+</html>
