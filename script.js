@@ -6,11 +6,13 @@ const parent = document.querySelector("ol");
 const template = document.querySelector("template");
 const modal = document.querySelector(".modal");
 const img = document.querySelector(".header-img");
+const bg = document.querySelector(".background");
 
 document.addEventListener("DOMContentLoaded", init);
 
 function init() {
   loadJSON();
+  setTimeout(backgroundFade, 200);
 
   //SETUP
   let students = [];
@@ -91,12 +93,7 @@ function init() {
   }
 }
 
+//FADING BACKGROUND IMAGE WITH DELAY
 function backgroundFade() {
-  setTimeout(function() {
-    document.querySelector(".background").style.backgroundImage =
-      "linear-gradient(rgba(63, 63, 63, 0.7) 100%, transparent 50%)";
-  }, 3000);
+  bg.style.opacity = "0.5";
 }
-
-// const button = document.querySelector(".main-list__button");
-// button.addEventListener("click", console.log("clicked"));

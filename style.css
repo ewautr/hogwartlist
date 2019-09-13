@@ -7,10 +7,11 @@ html {
   font-family: "Aachen", sans-serif;
   color: #221807;
 }
-
+/* linear-gradient(rgba(63, 63, 63, 0) 100%, transparent 100%) */
 .background {
-  background-image: linear-gradient(rgba(63, 63, 63, 0.7) 100%, transparent 50%),
+  background-image: linear-gradient(rgba(63, 63, 63, 0) 100%, transparent 100%),
     url(assets/bg.png);
+  opacity: 1;
   background-size: 100%;
   background-repeat: no-repeat;
   height: 160rem;
@@ -20,6 +21,7 @@ html {
   top: 0;
   left: 50%;
   transform: translate(-50%, 0);
+  transition: opacity 3.5s ease-in;
 }
 
 .wrapper {
