@@ -1,7 +1,18 @@
 html {
+  --color-griffindor: rgba(174, 0, 1, 1);
+  --color-griffindor2: rgba(238, 186, 48, 1);
+  --color-slytherin: #2a623d;
+  --color-slytherin2: #5d5d5d;
+  --color-ravenclaw: #222f5b;
+  --color-ravenclaw2: #946b2d;
+  --color-hufflepuff: #f0c75e;
+  --color-hufflepuff2: #372e29;
+}
+
+html {
   box-sizing: border-box;
   font-size: 10px;
-  background-color: #3f3f3f;
+  background-color: #161616;
 
   text-transform: uppercase;
   font-family: "Aachen", sans-serif;
@@ -9,8 +20,7 @@ html {
 }
 /* linear-gradient(rgba(63, 63, 63, 0) 100%, transparent 100%) */
 .background {
-  background-image: linear-gradient(rgba(63, 63, 63, 0) 100%, transparent 100%),
-    url(assets/bg.png);
+  background-image: url(assets/bg.png);
   opacity: 1;
   background-size: 100%;
   background-repeat: no-repeat;
@@ -21,7 +31,7 @@ html {
   top: 0;
   left: 50%;
   transform: translate(-50%, 0);
-  transition: opacity 3.5s ease-in;
+  transition: opacity 0.5s ease-in 1s;
 }
 
 .wrapper {
@@ -143,9 +153,6 @@ select {
   background-color: #221807;
   text-align: right;
 
-  font-family: inherit;
-  font-size: 1.5rem;
-  color: #e7e4d3;
   border-radius: 0;
   margin-bottom: 4rem;
   outline: 2px solid #221807;
@@ -160,22 +167,111 @@ select {
   transform: translate(0.1rem, 0.2rem);
 }
 
+.button-text {
+  font-family: "Aachen", sans-serif;
+  font-size: 1.5rem;
+  color: #e7e4d3;
+  text-decoration: none;
+}
+
 .students-div {
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
 
+/* ----- STYLING MODAL ------*/
 .modal {
+  height: 100vh;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 10000000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+
+.modal:target {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal:target .modal__content {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+
+.modal__content {
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
   width: 61rem;
-  height: 40rem;
+  transform: translate(-50%, -50%) scale(0.5);
+
   background-image: url(assets/paper.jpg);
   background-position: center;
+  box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.6);
+  display: table;
+  opacity: 0;
+  transition: all 0.2s 0.2s;
 }
 
-.hidden {
-  display: none;
+.modal__left {
+  width: 33.3333333%;
+  display: table-cell;
+
+  margin: 0.5rem;
+}
+
+.modal__right {
+  width: 66.6666666%;
+  display: table-cell;
+  vertical-align: middle;
+  padding: 3rem 5rem;
+}
+
+.modal__img--student {
+  display: block;
+  width: 95%;
+  height: 25rem;
+
+  margin: 0.5rem;
+}
+
+.modal__img--symbol {
+  position: absolute;
+  bottom: 1rem;
+  left: 2%;
+  display: block;
+  width: 5rem;
+  height: 5rem;
+  filter: grayscale(50%);
+}
+
+.modal__heading {
+  font-size: 3rem;
+  border-bottom: 2px solid var(--color-griffindor);
+}
+
+.modal__text {
+  display: block;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--color-griffindor2);
+}
+
+.modal__close {
+  display: inline-block;
+  color: inherit;
+  text-decoration: none;
+  font-size: 3rem;
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  transition: all 0.2s;
+}
+.modal__close:hover {
+  transform: scale(1.1);
+  color: var(--color-griffindor);
 }
