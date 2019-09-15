@@ -1,9 +1,14 @@
 "use strict";
 
 //INITIAL SETUP
-let students = [];
 let filter = "all";
 let sort;
+const allStudents = [];
+const Student = {
+  firstName: "-firstname-",
+  lastName: "-lastname-",
+  house: "-house-"
+};
 
 //OBJECT CONTAINING ALL GLOBAL DOM VARIABLES
 const DOM = {
@@ -12,7 +17,13 @@ const DOM = {
   template: document.querySelector("template"),
   wrapperDiv: document.querySelector(".background"),
   filterDropdown: document.querySelectorAll("#filter"),
-  sortDropdown: document.querySelectorAll("#sort")
+  sortDropdown: document.querySelectorAll("#sort"),
+  modalHeading: document.querySelector(".modal__heading"),
+  modalDesc: document.querySelector(".modal__text"),
+  modalImg: document.querySelector(".modal__img--student"),
+  modalHouseImg: document.querySelector(".modal__img--symbol"),
+  modalButton: document.querySelector(".button"),
+  html: document.querySelector("html")
 };
 
 //CALLING INIT FUNCTION ON PAGE LOAD
@@ -35,67 +46,99 @@ function setUpEventListeners() {
 }
 
 //FETCHING DATA FROM JSON
-async function loadJSON() {
-  let jsonData = await fetch(DOM.jsonLink);
-  students = await jsonData.json();
-  //DISPLAY LIST
-  displayList();
+function loadJSON() {
+  fetch(DOM.jsonLink)
+    .then(response => response.json())
+    .then(jsonData => {
+      prepareObjects(jsonData);
+    });
+}
+
+function prepareObjects(jsonData) {
+  jsonData.forEach(jsonObject => {
+    //Create new object with cleaned data
+    const student = Object.create(Student);
+    //Interpret jsonObject into animal properties
+    const firstSpace = jsonObject.fullname.indexOf(" ");
+    student.firstName = jsonObject.fullname.substring(0, firstSpace);
+    student.lastName = jsonObject.fullname.substring(firstSpace + 1);
+    student.house = jsonObject.house;
+    //TODO: ADD DESC AND PHOTO ONCE YOU HAVE IT
+
+    allStudents.push(student);
+  });
+  displayList(allStudents);
 }
 
 //FILTER DATA FUNCTION
 function filterBy() {
   filter = this.value;
-  displayList();
+  displayList(allStudents);
 }
 
-//SORT DATA FUNCTION
+//SORT DATA IF STATEMENTS
 function sortBy() {
   sort = this.value;
-
   //IF STATEMENTS + .SORT() METHOD
   if (sort == "firstName") {
-    students.sort(function(a, b) {
+    allStudents.sort((a, b) => {
       return a.firstName.localeCompare(b.firstName);
     });
   } else if (sort == "lastName") {
-    students.sort(function(a, b) {
+    allStudents.sort((a, b) => {
       return a.lastName.localeCompare(b.lastName);
     });
   } else if (sort == "house") {
-    students.sort(function(a, b) {
+    allStudents.sort((a, b) => {
       return a.house.localeCompare(b.house);
     });
   } else if (sort == "all") {
-    init(); //RESETING
+    init();
   }
-  displayList();
+  displayList(allStudents);
 }
 
 //DISPLAYING THE LIST
-function displayList() {
+function displayList(students) {
   DOM.parent.innerHTML = "";
 
-  students.forEach(object => {
-    //SEPARATING FIRST NAME AND LAST NAME
-    const firstSpace = object.fullname.indexOf(" ");
-    let firstName = object.fullname.substring(0, firstSpace);
-    let lastName = object.fullname.substring(firstSpace + 1);
-    object.firstName = firstName;
-    object.lastName = lastName;
+  students.forEach(displayStudent);
+}
 
-    //IF STATEMENT FOR FILTERING THE LIST
-    if (filter == object.house || filter == "all") {
-      //cloning the template
-      const clone = DOM.template.cloneNode(true).content;
+// DEFINING THE CLONE
+function displayStudent(student) {
+  //IF STATEMENT FOR FILTERING THE LIST
+  if (filter == student.house || filter == "all") {
+    //cloning the template
+    const clone = DOM.template.cloneNode(true).content;
 
-      //populating it
-      clone.querySelector("li").innerHTML =
-        firstName + " " + lastName + ", " + object.house;
+    //populating it
+    clone.querySelector(
+      "li"
+    ).innerHTML = `${student.firstName} ${student.lastName}, ${student.house}`;
 
-      //appending to DOM
-      DOM.parent.appendChild(clone); // puts the tamplate in my <ol>
+    //displaying modal
+    clone.querySelector(".button").addEventListener("click", () => {
+      displayModal(student);
+    });
+
+    function displayModal(student) {
+      DOM.modalHeading.textContent = `${student.firstName} ${student.lastName}`;
+      DOM.modalImg.src = `assets/students_photos/${student.lastName.toLowerCase()}_${student.firstName[0].toLowerCase()}.png`;
+      DOM.modalHouseImg.src = `assets/${student.house.toLowerCase()}.png`;
+      console.log(student.house);
+      DOM.html.setAttribute(
+        "data-attribute",
+        `${student.house.toLowerCase()}-colors`
+      );
     }
-  });
+
+    //ADDING HOUSE ATTRIBUTE
+    clone.querySelector(".students-div").setAttribute("house", student.house);
+
+    //appending to DOM
+    DOM.parent.appendChild(clone); // puts the tamplate in my <ol>
+  }
 }
 
 //FADING BACKGROUND IMAGE WITH DELAY
