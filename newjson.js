@@ -6,13 +6,15 @@ let sort;
 const allStudents = [];
 const Student = {
   firstName: "-firstname-",
+  middleName: "-middlename-",
   lastName: "-lastname-",
-  house: "-house-"
+  house: "-house-",
+  gender: "-gender"
 };
 
 //OBJECT CONTAINING ALL GLOBAL DOM VARIABLES
 const DOM = {
-  jsonLink: "http://petlatkea.dk/2019/students1991.json",
+  jsonLink: "http://petlatkea.dk/2019/hogwartsdata/students.json",
   parent: document.querySelector("ol"),
   template: document.querySelector("template"),
   wrapperDiv: document.querySelector(".background"),
@@ -54,15 +56,23 @@ function loadJSON() {
     });
 }
 
+//ASSIGNING DATA TO STUDENT OBJECT
 function prepareObjects(jsonData) {
   jsonData.forEach(jsonObject => {
     //Create new object with cleaned data
     const student = Object.create(Student);
-    //Interpret jsonObject into animal properties
-    const firstSpace = jsonObject.fullname.indexOf(" ");
-    student.firstName = jsonObject.fullname.substring(0, firstSpace);
-    student.lastName = jsonObject.fullname.substring(firstSpace + 1);
-    student.house = jsonObject.house;
+    //Interpret jsonObject into student properties
+    let fullname = jsonObject.fullname.trim();
+    student.firstName = fullname.split(" ")[0];
+    if (fullname.split(" ").length === 2) {
+      student.lastName = fullname.split(" ")[1];
+    } else {
+      student.lastName = fullname.split(" ")[2];
+      student.middleName = fullname.split(" ")[1];
+    }
+    student.house = jsonObject.house.toLowerCase().trim();
+    student.gender = jsonObject.gender;
+
     //TODO: ADD DESC AND PHOTO ONCE YOU HAVE IT
 
     allStudents.push(student);
@@ -124,7 +134,12 @@ function displayStudent(student) {
 
     //displaying modal function
     function displayModal(student) {
-      DOM.modalHeading.textContent = `${student.firstName} ${student.lastName}`;
+      if (student.middleName !== "-middlename-") {
+        DOM.modalHeading.textContent = `${student.firstName} ${student.middleName} ${student.lastName}`;
+      } else {
+        DOM.modalHeading.textContent = `${student.firstName} ${student.lastName}`;
+      }
+
       // DOM.modalImg.src = `assets/students_photos/${student.lastName.toLowerCase()}_${student.firstName[0].toLowerCase()}.png`;
       DOM.modalHouseImg.src = `assets/${student.house.toLowerCase()}.png`;
       console.log(student.house);
