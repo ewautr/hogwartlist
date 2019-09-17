@@ -1,4 +1,6 @@
 "use strict";
+//TODO: GENERALIZE UPPER LOWER CASING CODE
+//TODO: SELECTED HOUSE HIGHLIGHTS THE NUMBER OF STUDENTS
 
 //INITIAL SETUP
 let filter = "all";
@@ -6,13 +8,16 @@ let sort;
 const allStudents = [];
 const Student = {
   firstName: "-firstname-",
+  middleName: "-middlename-",
   lastName: "-lastname-",
-  house: "-house-"
+  house: "-house-",
+  gender: "-gender"
 };
 
 //OBJECT CONTAINING ALL GLOBAL DOM VARIABLES
 const DOM = {
-  jsonLink: "http://petlatkea.dk/2019/students1991.json",
+  jsonLink: "http://petlatkea.dk/2019/hogwartsdata/students.json",
+  jsonLinkFamilies: "http://petlatkea.dk/2019/hogwartsdata/families.json",
   parent: document.querySelector("ol"),
   template: document.querySelector("template"),
   wrapperDiv: document.querySelector(".background"),
@@ -23,7 +28,14 @@ const DOM = {
   modalImg: document.querySelector(".modal__img--student"),
   modalHouseImg: document.querySelector(".modal__img--symbol"),
   modalButton: document.querySelector(".button"),
-  html: document.querySelector("html")
+  html: document.querySelector("html"),
+  modalBloodStatus: document.querySelector(".bloodStatus"),
+  numberAllStudents: document.querySelector(".numberAllStudents"),
+  numberExpStudents: document.querySelector(".numberExpStudents"),
+  numberGrifStudents: document.querySelector(".numberGrifStudents"),
+  numberHufStudents: document.querySelector(".numberHufStudents"),
+  numberRavStudents: document.querySelector(".numberRavStudents"),
+  numberSlyStudents: document.querySelector(".numberSlyStudents")
 };
 
 //CALLING INIT FUNCTION ON PAGE LOAD
@@ -54,20 +66,37 @@ function loadJSON() {
     });
 }
 
+//ASSIGNING DATA TO STUDENT OBJECT
 function prepareObjects(jsonData) {
   jsonData.forEach(jsonObject => {
     //Create new object with cleaned data
     const student = Object.create(Student);
-    //Interpret jsonObject into animal properties
-    const firstSpace = jsonObject.fullname.indexOf(" ");
-    student.firstName = jsonObject.fullname.substring(0, firstSpace);
-    student.lastName = jsonObject.fullname.substring(firstSpace + 1);
-    student.house = jsonObject.house;
-    //TODO: ADD DESC AND PHOTO ONCE YOU HAVE IT
+    //Interpret jsonObject into student properties
+    let fullname = jsonObject.fullname.trim();
+    student.firstName = fullname.split(" ")[0];
+    student.firstName =
+      student.firstName.substring(0, 1).toUpperCase() +
+      student.firstName.substring(1).toLowerCase();
 
+    if (fullname.split(" ").length === 2) {
+      student.lastName = fullname.split(" ")[1];
+      student.lastName =
+        student.lastName.substring(0, 1).toUpperCase() +
+        student.lastName.substring(1).toLowerCase();
+    } else if (fullname.split(" ").length === 3) {
+      student.middleName = fullname.split(" ")[1];
+      student.lastName = fullname.split(" ")[2];
+      student.lastName =
+        student.lastName.substring(0, 1).toUpperCase() +
+        student.lastName.substring(1).toLowerCase();
+    }
+    student.house = jsonObject.house.toLowerCase().trim();
+    student.gender = jsonObject.gender;
+    //Pushing results to all students array
     allStudents.push(student);
   });
   displayList(allStudents);
+  displayListDetails(allStudents);
 }
 
 //FILTER DATA FUNCTION
@@ -79,6 +108,7 @@ function filterBy() {
 //SORT DATA IF STATEMENTS
 function sortBy() {
   sort = this.value;
+
   //IF STATEMENTS + .SORT() METHOD
   if (sort == "firstName") {
     allStudents.sort((a, b) => {
@@ -124,10 +154,12 @@ function displayStudent(student) {
 
     //displaying modal function
     function displayModal(student) {
-      DOM.modalHeading.textContent = `${student.firstName} ${student.lastName}`;
-      // DOM.modalImg.src = `assets/students_photos/${student.lastName.toLowerCase()}_${student.firstName[0].toLowerCase()}.png`;
-      DOM.modalHouseImg.src = `assets/${student.house.toLowerCase()}.png`;
-      console.log(student.house);
+      if (student.middleName !== "-middlename-") {
+        DOM.modalHeading.textContent = `${student.firstName} ${student.middleName} ${student.lastName}`;
+      } else {
+        DOM.modalHeading.textContent = `${student.firstName} ${student.lastName}`;
+      }
+      DOM.modalHouseImg.src = `assets/${student.house}.png`;
       DOM.html.setAttribute(
         "data-attribute",
         `${student.house.toLowerCase()}-colors`
@@ -139,12 +171,46 @@ function displayStudent(student) {
       }
     }
 
-    //ADDING HOUSE ATTRIBUTE
-    clone.querySelector(".students-div").setAttribute("house", student.house);
+    //PURE BLOOD
+    loadFamilyJSON();
+    const Family = {
+      halfBlood: "-half-",
+      pureBlood: "-pure-"
+    };
+    function loadFamilyJSON() {
+      fetch(DOM.jsonLinkFamilies)
+        .then(response => response.json())
+        .then(jsonFamilyData => {
+          prepareFamilyObject(jsonFamilyData);
+        });
+    }
+    function prepareFamilyObject(jsonFamilyData) {
+      //Create new object with cleaned data
+      const family = Object.create(Family);
+      //Interpret jsonObject into student properties
+      family.halfBlood = jsonFamilyData.half;
+      family.pureBlood = jsonFamilyData.pure;
+      checkBloodStatus(family);
+    }
+    function checkBloodStatus(family) {
+      if (family.halfBlood.includes(`${student.lastName}`)) {
+        DOM.modalBloodStatus.textContent = `blood status: halfblood`;
+      } else if (family.pureBlood.includes(`${student.lastName}`)) {
+        DOM.modalBloodStatus.textContent = `blood status: pureblood`;
+      } else {
+        DOM.modalBloodStatus.textContent = `blood status: non-magical parents`;
+      }
+    }
 
     //appending to DOM
     DOM.parent.appendChild(clone); // puts the tamplate in my <ol>
   }
+}
+
+//DISPLAYING LIST DETAILS
+function displayListDetails(allStudents) {
+  console.log(allStudents);
+  DOM.numberAllStudents.textContent = `Students: ${allStudents.length}`;
 }
 
 //FADING BACKGROUND IMAGE WITH DELAY

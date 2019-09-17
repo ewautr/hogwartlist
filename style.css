@@ -246,7 +246,7 @@ select {
   display: block;
   width: 95%;
   height: 25rem;
-
+  filter: drop-shadow(0.5rem 0.5rem 1rem rgba(0, 0, 0, 0.2));
   margin: 0.5rem;
 }
 
@@ -258,7 +258,7 @@ select {
   display: block;
   width: 5rem;
   height: 5rem;
-  filter: grayscale(50%);
+  filter: drop-shadow(0.5rem 0.5rem 0.5rem rgba(0, 0, 0, 0.5)) grayscale(50%);
 }
 
 .modal__heading {
@@ -266,7 +266,7 @@ select {
   border-bottom: 2px solid var(--color-border1);
 }
 
-.modal__text {
+.modal__text:last-child {
   display: block;
   padding-bottom: 1rem;
   border-bottom: 2px solid var(--color-border2);
@@ -285,4 +285,14 @@ select {
 .modal__close:hover {
   transform: scale(1.1);
   color: var(--color-border1);
+}
+
+.listDetails {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-items: center;
+}
+
+.listDetails p {
+  margin: 0.5rem;
 }
