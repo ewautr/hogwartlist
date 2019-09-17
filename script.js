@@ -57,10 +57,6 @@ function sortList(event) {
   displayList(currentList);
 }
 
-function sortListBy(prop) {
-  currentList.sort((a, b) => (a[prop] > b[prop] ? 1 : -1));
-}
-
 //FETCHING DATA FROM JSON
 function loadJSON() {
   fetch(DOM.jsonLink)
@@ -109,6 +105,10 @@ function rebuildList() {
   displayList(currentList);
 }
 
+function sortListBy(prop) {
+  currentList.sort((a, b) => (a[prop] > b[prop] ? 1 : -1));
+}
+
 function filterList(event) {
   const filterBy = event.target.value;
   filterListBy(filterBy);
@@ -117,10 +117,15 @@ function filterList(event) {
 
 //FILTER DATA FUNCTION
 function filterListBy(filterBy) {
-  //TODO: FILTERING SHIT
-  currentList = allStudents.filter(animal => {
-    return true;
-  });
+  console.log(filterBy);
+  currentList = allStudents.filter(filterByHouse);
+  function filterByHouse(student) {
+    if (student.house === filterBy || filterBy === "all") {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
 
 //DISPLAYING THE LIST
