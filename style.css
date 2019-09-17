@@ -266,6 +266,10 @@ select {
   border-bottom: 2px solid var(--color-border1);
 }
 
+.modal__text {
+  font-size: 1.5rem;
+}
+
 .modal__text:last-child {
   display: block;
   padding-bottom: 1rem;
