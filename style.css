@@ -25,6 +25,7 @@ html {
   font-family: "Aachen", sans-serif;
   color: #221807;
 }
+
 /* linear-gradient(rgba(63, 63, 63, 0) 100%, transparent 100%) */
 .background {
   background-image: url(assets/bg.png);
@@ -178,7 +179,10 @@ select {
 
 .button:hover {
   outline-offset: 0.2rem;
+}
+.button:active {
   transform: translate(0.1rem, 0.2rem);
+  box-shadow: 0.5rem 0.5rem 1rem rgba(0, 0, 0, 0.6);
 }
 
 .main-list__expellbutton {
@@ -400,6 +404,7 @@ select {
 
   50% {
     opacity: 0.5;
+    transform: scale(1.05) rotate(0deg);
   }
 
   60% {
@@ -408,12 +413,11 @@ select {
 
   70% {
     opacity: 0.5;
-    transform: scale(1.05);
   }
 
   80% {
     opacity: 1;
-    transform: scale(1.1);
+    transform: scale(2) rotate(180deg);
   }
 
   90% {

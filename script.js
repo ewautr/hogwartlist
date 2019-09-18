@@ -114,7 +114,7 @@ function prepareObjects(jsonData) {
 
 function rebuildList() {
   filterListBy("all");
-  sortListBy("name");
+  sortListBy("all");
   displayList(currentList);
 }
 
@@ -124,8 +124,12 @@ function sortListBy(prop) {
 
 function filterList(event) {
   const filterBy = event.target.value;
-  filterListBy(filterBy);
-  displayList(currentList);
+  if (filterBy === "expelled") {
+    displayList(expelledList);
+  } else {
+    filterListBy(filterBy);
+    displayList(currentList);
+  }
 }
 
 //FILTER DATA FUNCTION
@@ -138,6 +142,7 @@ function filterListBy(filterBy) {
       return false;
     }
   }
+  return currentList.length;
 }
 
 //DISPLAYING THE LIST
@@ -227,13 +232,21 @@ function displayStudent(student, index) {
 function displayListDetails(currentList) {
   DOM.numberAllStudents.textContent = `Students: ${allStudents.length}`;
   DOM.numberExpStudents.textContent = `Expelled: ${expelledList.length}`;
+  // DOM.numberGryfStudents.textContent = `Gryffindor: ${filterListBy(
+  //   "gryffindor"
+  // )}`;
+  // DOM.numberHufStudents.textContent = `Hufflepuff: ${filterListBy(
+  //   "hufflepuff"
+  // )}`;
+  // DOM.numberSlyStudents.textContent = `Slytherin: ${filterListBy("slytherin")}`;
+  // DOM.numberRavStudents.textContent = `Ravenclaw: ${filterListBy("ravenclaw")}`;
 }
 
 //EXPELLING STUDENTS
 function expellStudent(event) {
   let element = event.target;
   if (element.dataset.action === "remove" && element.dataset.id !== "666") {
-    const clickedId = element.dataset.attribute;
+    const clickedId = element.dataset.id;
 
     function findById(arr, index) {
       function findId(student) {
