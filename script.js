@@ -36,7 +36,7 @@ const DOM = {
   modalBloodStatus: document.querySelector(".bloodStatus"),
   numberAllStudents: document.querySelector(".numberAllStudents"),
   numberExpStudents: document.querySelector(".numberExpStudents"),
-  numberGrifStudents: document.querySelector(".numberGrifStudents"),
+  numberGryfStudents: document.querySelector(".numberGrifStudents"),
   numberHufStudents: document.querySelector(".numberHufStudents"),
   numberRavStudents: document.querySelector(".numberRavStudents"),
   numberSlyStudents: document.querySelector(".numberSlyStudents"),
@@ -232,14 +232,30 @@ function displayStudent(student, index) {
 function displayListDetails(currentList) {
   DOM.numberAllStudents.textContent = `Students: ${allStudents.length}`;
   DOM.numberExpStudents.textContent = `Expelled: ${expelledList.length}`;
-  // DOM.numberGryfStudents.textContent = `Gryffindor: ${filterListBy(
-  //   "gryffindor"
-  // )}`;
-  // DOM.numberHufStudents.textContent = `Hufflepuff: ${filterListBy(
-  //   "hufflepuff"
-  // )}`;
-  // DOM.numberSlyStudents.textContent = `Slytherin: ${filterListBy("slytherin")}`;
-  // DOM.numberRavStudents.textContent = `Ravenclaw: ${filterListBy("ravenclaw")}`;
+  DOM.numberGryfStudents.textContent = `Gryffindor: ${getNumberofStudents(
+    "gryffindor"
+  )}`;
+  DOM.numberHufStudents.textContent = `Hufflepuff: ${getNumberofStudents(
+    "hufflepuff"
+  )}`;
+  DOM.numberSlyStudents.textContent = `Slytherin: ${getNumberofStudents(
+    "slytherin"
+  )}`;
+  DOM.numberRavStudents.textContent = `Ravenclaw: ${getNumberofStudents(
+    "ravenclaw"
+  )}`;
+
+  function getNumberofStudents(house) {
+    let group = allStudents.filter(filterByHouse);
+    function filterByHouse(student) {
+      if (student.house === house || house === "all") {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return group.length;
+  }
 }
 
 //EXPELLING STUDENTS
