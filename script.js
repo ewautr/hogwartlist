@@ -1,10 +1,12 @@
 "use strict";
+//TODO: FIX NUMBERS IN LOIST DETAILS
 //TODO: GENERALIZE UPPER LOWER CASING CODE
 //TODO: SELECTED HOUSE HIGHLIGHTS THE NUMBER OF STUDENTS
 
 //INITIAL SETUP
 const allStudents = [];
 let currentList = [];
+let expelledList = [];
 
 //PROTOTYPE STUDENT
 const Student = {
@@ -12,7 +14,8 @@ const Student = {
   middleName: "-middlename-",
   lastName: "-lastname-",
   house: "-house-",
-  gender: "-gender"
+  gender: "-gender",
+  id: "-id-"
 };
 
 //OBJECT CONTAINING ALL GLOBAL DOM VARIABLES
@@ -36,7 +39,8 @@ const DOM = {
   numberGrifStudents: document.querySelector(".numberGrifStudents"),
   numberHufStudents: document.querySelector(".numberHufStudents"),
   numberRavStudents: document.querySelector(".numberRavStudents"),
-  numberSlyStudents: document.querySelector(".numberSlyStudents")
+  numberSlyStudents: document.querySelector(".numberSlyStudents"),
+  mainList: document.querySelector(".main-list")
 };
 
 //CALLING INIT FUNCTION ON PAGE LOAD
@@ -45,6 +49,7 @@ document.addEventListener("DOMContentLoaded", init);
 function init() {
   DOM.sortDropdown.addEventListener("change", sortList);
   DOM.filterDropdown.addEventListener("change", filterList);
+  DOM.mainList.addEventListener("click", expellStudent);
   backgroundFade();
   loadJSON();
 }
@@ -92,11 +97,19 @@ function prepareObjects(jsonData) {
     }
     student.house = jsonObject.house.toLowerCase().trim();
     student.gender = jsonObject.gender;
+    student.id = uuidv4();
     //Pushing results to all students array
     allStudents.push(student);
   });
+  //Making childhood dreams come true
+  const ewaStudent = Object.create(Student);
+  ewaStudent.firstName = "Ewa";
+  ewaStudent.lastName = "Utracka";
+  ewaStudent.house = "slytherin";
+  ewaStudent.gender = "girl";
+  ewaStudent.id = "666";
+  allStudents.push(ewaStudent);
   rebuildList();
-  displayListDetails(allStudents);
 }
 
 function rebuildList() {
@@ -117,7 +130,6 @@ function filterList(event) {
 
 //FILTER DATA FUNCTION
 function filterListBy(filterBy) {
-  console.log(filterBy);
   currentList = allStudents.filter(filterByHouse);
   function filterByHouse(student) {
     if (student.house === filterBy || filterBy === "all") {
@@ -133,10 +145,11 @@ function displayList(students) {
   DOM.parent.innerHTML = "";
 
   students.forEach(displayStudent);
+  displayListDetails(currentList);
 }
 
 // DEFINING THE CLONE
-function displayStudent(student) {
+function displayStudent(student, index) {
   //create clone
   const clone = DOM.template.cloneNode(true).content;
 
@@ -144,6 +157,12 @@ function displayStudent(student) {
   clone.querySelector(
     "li"
   ).innerHTML = `${student.firstName} ${student.lastName}, ${student.house}`;
+
+  // store the index on the button
+  clone.querySelector("[data-action=remove]").dataset.index = index;
+
+  // add uuid as the ID to the remove-button as a data attribute
+  clone.querySelector("[data-id=uuid]").dataset.id = student.id;
 
   //event listener for displaying modal
   clone.querySelector(".button").addEventListener("click", () => {
@@ -205,11 +224,60 @@ function displayStudent(student) {
 }
 
 //DISPLAYING LIST DETAILS
-function displayListDetails(allStudents) {
+function displayListDetails(currentList) {
   DOM.numberAllStudents.textContent = `Students: ${allStudents.length}`;
+  DOM.numberExpStudents.textContent = `Expelled: ${expelledList.length}`;
+}
+
+//EXPELLING STUDENTS
+function expellStudent(event) {
+  let element = event.target;
+  if (element.dataset.action === "remove" && element.dataset.id !== "666") {
+    const clickedId = element.dataset.attribute;
+
+    function findById(arr, index) {
+      function findId(student) {
+        if (index === student.id) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+      return arr.findIndex(findId);
+    }
+    let listId = findById(allStudents, clickedId);
+    let currentListId = findById(currentList, clickedId);
+
+    expelledList.push(currentList[currentListId]);
+
+    currentList.splice(currentListId, 1);
+    allStudents.splice(listId, 1);
+
+    element.parentElement.classList.add("remove");
+    element.parentElement.addEventListener("animationend", function() {
+      element.parentElement.remove();
+    });
+
+    displayListDetails(currentList, expelledList);
+  } else if (element.dataset.id === "666") {
+    element.parentElement.classList.add("cantremove");
+    element.parentElement.addEventListener("animationend", function() {
+      element.parentElement.classList.remove("cantremove");
+    });
+  }
 }
 
 //FADING BACKGROUND IMAGE WITH DELAY
 function backgroundFade() {
   DOM.wrapperDiv.style.opacity = "0.2";
+}
+
+//CREATING UUID
+// source: https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+function uuidv4() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+    var r = (Math.random() * 16) | 0,
+      v = c == "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
 }
