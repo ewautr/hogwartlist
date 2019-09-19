@@ -7,6 +7,7 @@
 const allStudents = [];
 let currentList = [];
 let expelledList = [];
+let prefectsList = [];
 
 //PROTOTYPE STUDENT
 const Student = {
@@ -15,7 +16,9 @@ const Student = {
   lastName: "-lastname-",
   house: "-house-",
   gender: "-gender",
-  id: "-id-"
+  id: "-id-",
+  expelled: false,
+  prefect: "prefect"
 };
 
 //OBJECT CONTAINING ALL GLOBAL DOM VARIABLES
@@ -32,8 +35,11 @@ const DOM = {
   modalImg: document.querySelector(".modal__img--student"),
   modalHouseImg: document.querySelector(".modal__img--symbol"),
   modalButton: document.querySelector(".button"),
+  modalExpelledInfo: document.querySelector(".expelledInfo"),
   html: document.querySelector("html"),
   modalBloodStatus: document.querySelector(".bloodStatus"),
+  modalPrefectBtn: document.querySelector(".prefect-button"),
+  modalPrefectImg: document.querySelector(".modal__img--prefect"),
   numberAllStudents: document.querySelector(".numberAllStudents"),
   numberExpStudents: document.querySelector(".numberExpStudents"),
   numberGryfStudents: document.querySelector(".numberGrifStudents"),
@@ -98,6 +104,8 @@ function prepareObjects(jsonData) {
     student.house = jsonObject.house.toLowerCase().trim();
     student.gender = jsonObject.gender;
     student.id = uuidv4();
+    student.expelled = false;
+    student.prefect = false;
     //Pushing results to all students array
     allStudents.push(student);
   });
@@ -108,6 +116,8 @@ function prepareObjects(jsonData) {
   ewaStudent.house = "slytherin";
   ewaStudent.gender = "girl";
   ewaStudent.id = "666";
+  ewaStudent.expelled = false;
+  ewaStudent.prefect = false;
   allStudents.push(ewaStudent);
   rebuildList();
 }
@@ -174,6 +184,12 @@ function displayStudent(student, index) {
     displayModal(student);
   });
 
+  //prefect stuff
+  clone.querySelector("[data-field=prefect]").dataset.id = student.id;
+  clone
+    .querySelector("[data-field=prefect]")
+    .addEventListener("click", makePrefect);
+
   //displaying modal function
   function displayModal(student) {
     if (student.middleName !== "-middlename-") {
@@ -190,6 +206,11 @@ function displayStudent(student, index) {
       DOM.modalImg.src = `assets/students_photos/${student.lastName.toLowerCase()}_${student.firstName.toLowerCase()}.png`;
     } else {
       DOM.modalImg.src = `assets/students_photos/${student.lastName.toLowerCase()}_${student.firstName[0].toLowerCase()}.png`;
+    }
+
+    if (student.expelled) {
+      DOM.modalExpelledInfo.innerHTML = "Student status: E X P E L L E D";
+      DOM.modalExpelledInfo.style.color = "rgb(124, 0, 0)";
     }
   }
 
@@ -277,8 +298,13 @@ function expellStudent(event) {
     let listId = findById(allStudents, clickedId);
     let currentListId = findById(currentList, clickedId);
 
-    expelledList.push(currentList[currentListId]);
+    allStudents[listId].prefect = false;
+    currentList[currentListId].prefect = false;
 
+    expelledList.push(currentList[currentListId]);
+    expelledList.forEach(student => {
+      student.expelled = true;
+    });
     currentList.splice(currentListId, 1);
     allStudents.splice(listId, 1);
 
@@ -293,6 +319,60 @@ function expellStudent(event) {
     element.parentElement.addEventListener("animationend", function() {
       element.parentElement.classList.remove("cantremove");
     });
+  }
+}
+
+//MAKE PREFECT FUNCTION
+function makePrefect(event) {
+  let element = event.target;
+  const clickedId = element.dataset.id;
+
+  function findById(arr, index) {
+    function findId(student) {
+      if (index === student.id) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return arr.findIndex(findId);
+  }
+  const listId = findById(allStudents, clickedId);
+  const currentListId = findById(currentList, clickedId);
+  const prefectsId = findById(prefectsList, clickedId);
+  const personHouse = allStudents[listId].house;
+  let counter = 0;
+  let currentPrefects = [];
+
+  for (let i = 0; i < prefectsList.length; i++) {
+    if (personHouse == prefectsList[i].house) {
+      counter++;
+      currentPrefects.push(prefectsList[i]);
+    }
+  }
+
+  if (
+    allStudents[listId].prefect == true ||
+    currentList[currentListId].prefect == true
+  ) {
+    allStudents[listId].prefect = false;
+    currentList[currentListId].prefect = false;
+    prefectsList.splice(prefectsId, 1);
+    element.innerHTML = "+";
+  } else if (counter < 2) {
+    allStudents[listId].prefect = true;
+    currentList[currentListId].prefect = true;
+    prefectsList.push(allStudents[listId]);
+    element.innerHTML = "-";
+  } else {
+    console.log(currentPrefects);
+    document.querySelector(".alert").style.visibility = "visible";
+    document.querySelector(".alert__close").addEventListener("click", () => {
+      document.querySelector(".alert").style.visibility = "hidden";
+    });
+    document.querySelector(
+      ".alert-text"
+    ).innerHTML = `There can't be more than 2 prefects<span class="emName">!</span> <br><br> Current prefects are: <br> <span class="emName"> ${currentPrefects[0].firstName} ${currentPrefects[0].lastName} </span> and <span class="emName">${currentPrefects[1].firstName} ${currentPrefects[1].lastName} </span>`;
   }
 }
 

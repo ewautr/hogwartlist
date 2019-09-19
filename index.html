@@ -34,7 +34,7 @@
         <div class="header-options">
           <label for="sort" class="header-options__label">sort:</label>
           <select name="sort" id="sort">
-            <option value="all">all</option>
+            <option value="all">none</option>
             <option value="firstName">first name</option>
             <option value="lastName">last name</option>
             <option value="house">house</option>
@@ -77,6 +77,9 @@
         >
           &times;
         </button>
+        <button class="button main-list__expellbutton" data-field="prefect">
+          +
+        </button>
       </div>
     </template>
 
@@ -84,13 +87,21 @@
       <div class="modal__content">
         <div class="modal__left">
           <img src="" alt="student photo" class="modal__img--student" />
+          <img
+            src="assets/prefect.png"
+            alt="prefect badge"
+            class="modal__img--prefect"
+          />
         </div>
         <div class="modal__right">
           <a href="#heading" class="modal__close">&times;</a>
+          <!-- <button class="button prefect-button" data-field="prefect">
+            make prefect
+          </button> -->
           <h2 class="modal__heading">Hanna Abott</h2>
           <img src="" alt="house crest" class="modal__img--symbol" />
-          <p class="modal__text">
-            hogwart student, year 1991
+          <p class="modal__text expelledInfo">
+            Student status: student of class 1991
           </p>
           <p class="modal__text bloodStatus">
             blood status:
@@ -98,7 +109,12 @@
         </div>
       </div>
     </div>
-
+    <div class="prefectAlert alert">
+      <div class="alert-content">
+        <a href="#heading" class="alert__close">&times;</a>
+        <p class="modal__text alert-text"></p>
+      </div>
+    </div>
     <script src="script.js"></script>
   </body>
 </html>

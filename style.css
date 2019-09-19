@@ -160,11 +160,21 @@ select {
   width: 15rem;
   height: 3rem;
   background-color: #221807;
+  transition: all 0.2s ease-in;
+}
+
+.main-list__button:hover {
+  background-color: transparent;
+}
+
+.main-list__button:hover .button-text {
+  color: #221807;
 }
 
 .button {
-  display: inline-block;
+  display: block;
 
+  padding: 0;
   border-radius: 0;
   margin-bottom: 4rem;
   outline: 2px solid #221807;
@@ -175,6 +185,19 @@ select {
   font-family: "Aachen", sans-serif;
   font-size: 1.5rem;
   color: #e7e4d3;
+}
+
+.prefect-button {
+  transition: all 0.2s ease-in;
+  width: 10rem;
+  height: 2rem;
+  margin: 0 auto;
+  background-color: transparent;
+  color: #221807;
+  font-size: 1.2rem;
+}
+.prefect-button:hover {
+  transform: scale(1.05);
 }
 
 .button:hover {
@@ -199,15 +222,69 @@ select {
 }
 
 .button-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: "Aachen", sans-serif;
   font-size: 1.5rem;
   color: #e7e4d3;
   text-decoration: none;
+  width: 100%;
+  height: 100%;
 }
 
 .students-div {
   display: grid;
-  grid-template-columns: 1fr 18rem 4rem;
+  grid-template-columns: 1fr 18rem 4rem 4rem;
+}
+
+.alert {
+  position: fixed;
+  top: 0;
+  left: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  visibility: hidden;
+}
+
+.alert-text {
+  margin: 2rem 1rem;
+  line-height: 2.5rem;
+}
+
+.alert-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30rem;
+  background-image: url("assets/paper.jpg");
+}
+
+.emName {
+  color: rgb(124, 0, 0);
+  font-size: 2rem;
+}
+
+.alert__close {
+  display: inline-block;
+  color: inherit;
+  text-decoration: none;
+  font-size: 3rem;
+  position: absolute;
+  top: 0.2rem;
+  right: 0.7rem;
+  opacity: 0.5;
+  transition: all 0.2s ease-in;
+}
+
+.alert__close:hover {
+  transform: scale(1.5);
+  opacity: 1;
 }
 
 /* ----- STYLING MODAL ------*/
@@ -273,6 +350,18 @@ select {
   border-radius: 20%;
 }
 
+.modal__img--prefect {
+  position: absolute;
+  left: 17rem;
+  bottom: -1rem;
+  transform: translateX(-50%);
+  display: block;
+  width: 12rem;
+  height: 10rem;
+  filter: drop-shadow(0.5rem 0.5rem 0.5rem rgba(0, 0, 0, 0.5)) grayscale(50%);
+  opacity: 0;
+}
+
 .modal__img--symbol {
   position: absolute;
   bottom: 1rem;
@@ -315,9 +404,11 @@ select {
 }
 
 .listDetails {
+  margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   justify-items: center;
+  border-bottom: 1.5rem solid #221807;
 }
 
 .listDetails p {
