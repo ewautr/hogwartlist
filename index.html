@@ -68,22 +68,28 @@
       <div class="students-div">
         <li class="main-list__item">name + house</li>
         <button class="main-list__button button">
-          <a class="button-text" href="#modal">exclusive details</a>
+          exclusive details
         </button>
+
         <button
           class="button main-list__expellbutton"
           data-action="remove"
           data-id="uuid"
         >
           &times;
+          <p class="hoverHelpText expelText">expel student</p>
         </button>
-        <button class="button main-list__expellbutton" data-field="prefect">
+        <button
+          class="button main-list__expellbutton main-list__prefectbutton"
+          data-field="prefect"
+        >
           +
+          <p class="hoverHelpText prefectText">make prefect</p>
         </button>
       </div>
     </template>
 
-    <div class="modal" id="modal">
+    <div class="modal hidden" id="modal">
       <div class="modal__content">
         <div class="modal__left">
           <img src="" alt="student photo" class="modal__img--student" />
@@ -95,17 +101,16 @@
         </div>
         <div class="modal__right">
           <a href="#heading" class="modal__close">&times;</a>
-          <!-- <button class="button prefect-button" data-field="prefect">
-            make prefect
-          </button> -->
+          <button class="button squad-button hidden" data-field="squad">
+            add to Inquisitorial Squad
+          </button>
           <h2 class="modal__heading">Hanna Abott</h2>
           <img src="" alt="house crest" class="modal__img--symbol" />
           <p class="modal__text expelledInfo">
             Student status: student of class 1991
           </p>
-          <p class="modal__text bloodStatus">
-            blood status:
-          </p>
+          <p class="modal__text bloodStatus"></p>
+          <p class="modal__text squad-text"></p>
         </div>
       </div>
     </div>

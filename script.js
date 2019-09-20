@@ -1,7 +1,4 @@
 "use strict";
-//TODO: FIX NUMBERS IN LOIST DETAILS
-//TODO: GENERALIZE UPPER LOWER CASING CODE
-//TODO: SELECTED HOUSE HIGHLIGHTS THE NUMBER OF STUDENTS
 
 //INITIAL SETUP
 const allStudents = [];
@@ -9,7 +6,7 @@ let currentList = [];
 let expelledList = [];
 let prefectsList = [];
 
-//PROTOTYPE STUDENT
+//STUDENT PROTOTYPE
 const Student = {
   firstName: "-firstname-",
   middleName: "-middlename-",
@@ -18,10 +15,11 @@ const Student = {
   gender: "-gender",
   id: "-id-",
   expelled: false,
-  prefect: "prefect"
+  prefect: false,
+  squad: false
 };
 
-//OBJECT CONTAINING ALL GLOBAL DOM VARIABLES
+//OBJECT CONTAINING ALL GLOBAL VARIABLES
 const DOM = {
   jsonLink: "http://petlatkea.dk/2019/hogwartsdata/students.json",
   jsonLinkFamilies: "http://petlatkea.dk/2019/hogwartsdata/families.json",
@@ -30,6 +28,8 @@ const DOM = {
   wrapperDiv: document.querySelector(".background"),
   filterDropdown: document.querySelector("#filter"),
   sortDropdown: document.querySelector("#sort"),
+  modal: document.querySelector(".modal"),
+  modalClose: document.querySelector(".modal__close"),
   modalHeading: document.querySelector(".modal__heading"),
   modalDesc: document.querySelector(".modal__text"),
   modalImg: document.querySelector(".modal__img--student"),
@@ -40,6 +40,8 @@ const DOM = {
   modalBloodStatus: document.querySelector(".bloodStatus"),
   modalPrefectBtn: document.querySelector(".prefect-button"),
   modalPrefectImg: document.querySelector(".modal__img--prefect"),
+  modalSquadBtn: document.querySelector(".squad-button"),
+  modalSquadText: document.querySelector(".squad-text"),
   numberAllStudents: document.querySelector(".numberAllStudents"),
   numberExpStudents: document.querySelector(".numberExpStudents"),
   numberGryfStudents: document.querySelector(".numberGrifStudents"),
@@ -53,19 +55,13 @@ const DOM = {
 document.addEventListener("DOMContentLoaded", init);
 
 function init() {
+  //Event listener for sorting and filtering
   DOM.sortDropdown.addEventListener("change", sortList);
   DOM.filterDropdown.addEventListener("change", filterList);
+  //Event listener for expelling students
   DOM.mainList.addEventListener("click", expellStudent);
   backgroundFade();
   loadJSON();
-}
-
-//FILTERING FUNCTION
-
-function sortList(event) {
-  const sortBy = event.target.value;
-  sortListBy(sortBy);
-  displayList(currentList);
 }
 
 //FETCHING DATA FROM JSON
@@ -106,6 +102,7 @@ function prepareObjects(jsonData) {
     student.id = uuidv4();
     student.expelled = false;
     student.prefect = false;
+    student.squad = false;
     //Pushing results to all students array
     allStudents.push(student);
   });
@@ -118,20 +115,29 @@ function prepareObjects(jsonData) {
   ewaStudent.id = "666";
   ewaStudent.expelled = false;
   ewaStudent.prefect = false;
+  ewaStudent.squad = false;
   allStudents.push(ewaStudent);
   rebuildList();
 }
 
+//CREATING CURRENTLIST ARRAY WITH MODIFIED DATA
 function rebuildList() {
   filterListBy("all");
   sortListBy("all");
   displayList(currentList);
 }
 
+//SORTING FUNCTION
+function sortList(event) {
+  const sortBy = event.target.value;
+  sortListBy(sortBy);
+  displayList(currentList);
+}
 function sortListBy(prop) {
   currentList.sort((a, b) => (a[prop] > b[prop] ? 1 : -1));
 }
 
+//FILTERING FUNCTION
 function filterList(event) {
   const filterBy = event.target.value;
   if (filterBy === "expelled") {
@@ -141,8 +147,6 @@ function filterList(event) {
     displayList(currentList);
   }
 }
-
-//FILTER DATA FUNCTION
 function filterListBy(filterBy) {
   currentList = allStudents.filter(filterByHouse);
   function filterByHouse(student) {
@@ -152,11 +156,11 @@ function filterListBy(filterBy) {
       return false;
     }
   }
-  return currentList.length;
 }
 
 //DISPLAYING THE LIST
 function displayList(students) {
+  //Emptying the list
   DOM.parent.innerHTML = "";
 
   students.forEach(displayStudent);
@@ -164,57 +168,93 @@ function displayList(students) {
 }
 
 // DEFINING THE CLONE
-function displayStudent(student, index) {
-  //create clone
+function displayStudent(student) {
+  //Creating clone
   const clone = DOM.template.cloneNode(true).content;
 
-  //populating it
+  //Populating it
   clone.querySelector(
     "li"
   ).innerHTML = `${student.firstName} ${student.lastName}, ${student.house}`;
 
-  // store the index on the button
-  clone.querySelector("[data-action=remove]").dataset.index = index;
-
-  // add uuid as the ID to the remove-button as a data attribute
+  //Adding uuid to buttons as a data attribute
   clone.querySelector("[data-id=uuid]").dataset.id = student.id;
-
-  //event listener for displaying modal
-  clone.querySelector(".button").addEventListener("click", () => {
-    displayModal(student);
-  });
-
-  //prefect stuff
   clone.querySelector("[data-field=prefect]").dataset.id = student.id;
+
+  //Event listener for making prefects
   clone
     .querySelector("[data-field=prefect]")
     .addEventListener("click", makePrefect);
 
-  //displaying modal function
-  function displayModal(student) {
+  //Event listener for displaying modal
+  clone.querySelector(".main-list__button").addEventListener("click", () => {
+    displayModal(student);
+  });
+
+  //Defining the modal content
+  function displayModal() {
+    //Name, last name, middle name
     if (student.middleName !== "-middlename-") {
       DOM.modalHeading.textContent = `${student.firstName} ${student.middleName} ${student.lastName}`;
     } else {
       DOM.modalHeading.textContent = `${student.firstName} ${student.lastName}`;
     }
+    //Photo
     DOM.modalHouseImg.src = `assets/${student.house}.png`;
-    DOM.html.setAttribute(
-      "data-attribute",
-      `${student.house.toLowerCase()}-colors`
-    );
     if (student.lastName === "Patil") {
       DOM.modalImg.src = `assets/students_photos/${student.lastName.toLowerCase()}_${student.firstName.toLowerCase()}.png`;
     } else {
       DOM.modalImg.src = `assets/students_photos/${student.lastName.toLowerCase()}_${student.firstName[0].toLowerCase()}.png`;
     }
-
+    //House colors (border-bottoms)
+    DOM.html.setAttribute(
+      "data-attribute",
+      `${student.house.toLowerCase()}-colors`
+    );
+    //Expelled student status
     if (student.expelled) {
       DOM.modalExpelledInfo.innerHTML = "Student status: E X P E L L E D";
       DOM.modalExpelledInfo.style.color = "rgb(124, 0, 0)";
     }
+    //Prefect badge
+    if (student.prefect) {
+      DOM.modalPrefectImg.style.opacity = "1";
+    } else {
+      DOM.modalPrefectImg.style.opacity = "0";
+    }
+
+    //Adding id to the inq squad making button + event listener
+    DOM.modalSquadBtn.dataset.id = student.id;
+    DOM.modalSquadBtn.addEventListener("click", makeSquad);
+
+    //Inquisitorial squad display
+    if (student.house === "slytherin") {
+      DOM.modalSquadBtn.classList.remove("hidden");
+    } else {
+      DOM.modalSquadBtn.classList.add("hidden");
+    }
+    if (student.squad) {
+      DOM.modalSquadBtn.innerHTML = `delete from Inquisitorial Squad`;
+    } else {
+      DOM.modalSquadBtn.innerHTML = `add to Inquisitorial Squad`;
+    }
+    if (student.squad === false) {
+      DOM.modalSquadText.innerHTML = ``;
+    }
+
+    //Remove hiding class from the modal - showing it
+    DOM.modal.classList.remove("hidden");
+    DOM.modalClose.addEventListener("click", closeModal);
+
+    //Closing the modal when 'x' clicked
+    function closeModal(event) {
+      event.target.parentElement.parentElement.parentElement.classList.add(
+        "hidden"
+      );
+    }
   }
 
-  //PURE BLOOD
+  //CHECK AND DISPLAY BLOOD STATUS
   loadFamilyJSON();
   const Family = {
     halfBlood: "-half-",
@@ -245,12 +285,12 @@ function displayStudent(student, index) {
     }
   }
 
-  //appending to DOM
+  //Appending clone to DOM
   DOM.parent.appendChild(clone); // puts the tamplate in my <ol>
 }
 
 //DISPLAYING LIST DETAILS
-function displayListDetails(currentList) {
+function displayListDetails() {
   DOM.numberAllStudents.textContent = `Students: ${allStudents.length}`;
   DOM.numberExpStudents.textContent = `Expelled: ${expelledList.length}`;
   DOM.numberGryfStudents.textContent = `Gryffindor: ${getNumberofStudents(
@@ -265,7 +305,7 @@ function displayListDetails(currentList) {
   DOM.numberRavStudents.textContent = `Ravenclaw: ${getNumberofStudents(
     "ravenclaw"
   )}`;
-
+  //Function for getting the current number of students in each house
   function getNumberofStudents(house) {
     let group = allStudents.filter(filterByHouse);
     function filterByHouse(student) {
@@ -359,13 +399,13 @@ function makePrefect(event) {
     currentList[currentListId].prefect = false;
     prefectsList.splice(prefectsId, 1);
     element.innerHTML = "+";
+    element.classList.remove("cantremove");
   } else if (counter < 2) {
     allStudents[listId].prefect = true;
     currentList[currentListId].prefect = true;
     prefectsList.push(allStudents[listId]);
     element.innerHTML = "-";
   } else {
-    console.log(currentPrefects);
     document.querySelector(".alert").style.visibility = "visible";
     document.querySelector(".alert__close").addEventListener("click", () => {
       document.querySelector(".alert").style.visibility = "hidden";
@@ -376,7 +416,43 @@ function makePrefect(event) {
   }
 }
 
-//FADING BACKGROUND IMAGE WITH DELAY
+//MAKE INQUISITORIAL SQUAD FUNCTION
+function makeSquad(event) {
+  let element = event.target;
+  const clickedId = element.dataset.id;
+  function findById(arr, index) {
+    function findId(student) {
+      if (index === student.id) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return arr.findIndex(findId);
+  }
+  const listId = findById(allStudents, clickedId);
+  const currentListId = findById(currentList, clickedId);
+  if (
+    allStudents[listId].squad == true ||
+    currentList[currentListId].squad == true
+  ) {
+    allStudents[listId].squad = false;
+    currentList[currentListId].squad = false;
+    console.log("kicked out");
+    DOM.modalSquadText.innerHTML = ``;
+    DOM.modalSquadBtn.innerHTML = `add to Inquisitorial Squad`;
+  } else if (allStudents[listId].house == "slytherin") {
+    allStudents[listId].squad = true;
+    currentList[currentListId].squad = true;
+    console.log("made to squad");
+    DOM.modalSquadText.innerHTML = `${allStudents[listId].firstName} is a member of the Inquisitorial Squad`;
+    DOM.modalSquadBtn.innerHTML = `delete from Inquisitorial Squad`;
+  } else {
+    console.log("how tf did that even happen");
+  }
+}
+
+//FADING BACKGROUND IMAGE
 function backgroundFade() {
   DOM.wrapperDiv.style.opacity = "0.2";
 }
